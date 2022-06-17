@@ -1,5 +1,5 @@
 
-PROGRAM_SPACE equ 0x7e00
+PROGRAM_SPACE equ 0x8000
 
 ReadDisk:
 

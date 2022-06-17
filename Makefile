@@ -6,33 +6,39 @@ ex = extended.asm
 dbo = bootloader.bin
 dex = extended.bin
 gcc = i686-elf-gcc
-flags = "--ffreestanding -mno-red-zone -m64 -c"
-3 = kernel
+flags = -Ttext 0x8000 -nostdlib  -ffreestanding -mno-red-zone -m64 -c
+
+oex = extended.o
+3 = kernel1
 all: final.img sector
 
 final.img: final.bin
 	cp final.bin final.img 
 
 
-final.bin: sector
-	cat $(dbo) $(dex) > final.bin
+final.bin: binary
+	cat $(dbo) kernel.bin  > final.bin
+binary:  sector kernel 
 
-sector: sector1 sector2 
+kernel: kernel.o
+	ld -T"link.ld"
+
+kernel.o: $(3)/kernel.c
+	gcc $(flags) $(3)/kernel.c -o kernel.o
+
+sector: sector1 sector2  
 
 sector1: bootloader.bin
-
 bootloader.bin: $(1)/$(bo)
 	nasm -f bin $(1)/$(bo) -o $(dbo)
 
-sector2: $(dex)
+sector2: $(oex)
 
-$(dex): $(2)/$(ex)
-	nasm -f bin $(2)/$(ex) -o $(dex)
-
-
+$(oex): $(2)/$(ex)
+	nasm -f elf64 $(2)/$(ex) -o $(oex)
 
 clean: 
-	rm *.bin
+	rm *.bin *.o
 	
 run: 
 	qemu-system-i386 final.bin
