@@ -10,6 +10,6 @@ run with qemu:
 run with bochs:
   make bochs
  
- issue:  when i try to run it with qemu it says disk read fails , but works fine with bochs
+
  
  
