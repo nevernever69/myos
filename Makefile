@@ -41,7 +41,7 @@ clean:
 	rm *.bin *.o
 	
 run: 
-	qemu-system-i386 final.bin
+	qemu-system-x86_64 -fda final.bin
 
 bochs:
 	bochs -f boch-config
